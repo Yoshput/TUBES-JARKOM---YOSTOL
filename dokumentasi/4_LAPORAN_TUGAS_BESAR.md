@@ -10,13 +10,13 @@
 
 | No | Nama | NIM | Peran |
 |----|------|-----|-------|
-| 1 | [Nama Orang 1] | [NIM] | Backend Lead (webserver.py) |
+| 1 | [Yossika Putra Erlangga] | [103112430026] | Backend Lead (webserver.py) |
 | 2 | [Nama Orang 2] | [NIM] | Network Lead (proxy.py) |
 | 3 | [Nama Orang 3] | [NIM] | Testing Lead (client.py + UDP) |
 
-**Kelas:** [Kelas Anda]  
+**Kelas:** [12 - IF - 03]  
 **Tanggal Pengumpulan:** [Tanggal]  
-**Dosen Pengampu:** [Nama Dosen]
+**Dosen Pengampu:** [FAHRUDIN MUKTI WIBOWO]
 
 ---
 
