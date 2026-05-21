@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 ======================================================================
                     CLIENT - client.py
@@ -17,9 +16,9 @@ import re
 from datetime import datetime
 
 # ==================== KONFIGURASI ====================
-PROXY_HOST = 'localhost'
-PROXY_PORT = 8080
-SERVER_HOST = 'localhost'
+PROXY_HOST = '10.190.9.63'  # IP Laptop 2 (Proxy)
+PROXY_PORT = 9080
+SERVER_HOST = '10.190.6.190'  # IP Laptop 1 (Webserver)
 SERVER_UDP_PORT = 9000
 REQUEST_TIMEOUT = 5
 UDP_TIMEOUT = 1
@@ -56,7 +55,9 @@ def tcp_mode():
         "/",
         "/index.html",
         "/page.html",
-        "/api/status"
+        "/api/status",
+        "/tidak-ada.html",  # Test 404 Not Found
+        "/error"             # Test 404 Not Found
     ]
     
     for path in paths:
@@ -98,12 +99,19 @@ Connection: close\r
             # Display result
             log_message(f"GET {path} - {status_line} ({elapsed_time*1000:.1f}ms, {content_length} bytes)", "SUCCESS")
             
-            # Show preview if HTML
+            # Show preview if HTML (200 OK)
             if ".html" in path or status_line.find("200") != -1:
                 lines = response_str.split('\r\n\r\n')
                 if len(lines) > 1:
                     body = lines[1][:200]  # First 200 chars
                     print(f"   Preview: {body[:100]}...")
+            
+            # Show 404 error message clearly
+            if "404" in status_line:
+                lines = response_str.split('\r\n\r\n')
+                if len(lines) > 1:
+                    body = lines[1]
+                    print(f"   ⚠️  ERROR: {body}")
             
             client_socket.close()
             

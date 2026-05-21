@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 ======================================================================
                     WEB SERVER - webserver.py
@@ -21,7 +20,7 @@ from datetime import datetime
 from pathlib import Path
 
 # ==================== KONFIGURASI ====================
-HOST = 'localhost'
+HOST = '0.0.0.0'
 TCP_PORT = 8000
 UDP_PORT = 9000
 FILES_DIR = os.path.join(os.path.dirname(__file__), '..', 'files')
@@ -242,6 +241,10 @@ def tcp_server_thread():
 def udp_server_thread():
     """UDP Server thread untuk handle echo/QoS"""
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    # Windows specific: disable exclusive address use
+    if hasattr(socket, 'SO_EXCLUSIVEADDRUSE'):
+        udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 0)
     
     try:
         udp_socket.bind((HOST, UDP_PORT))

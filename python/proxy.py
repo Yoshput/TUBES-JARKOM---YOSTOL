@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 ======================================================================
                     PROXY SERVER - proxy.py
@@ -21,9 +20,9 @@ import hashlib
 from datetime import datetime
 
 # ==================== KONFIGURASI ====================
-PROXY_HOST = 'localhost'
-PROXY_PORT = 8080
-SERVER_HOST = 'localhost'
+PROXY_HOST = '0.0.0.0'
+PROXY_PORT = 9080
+SERVER_HOST = '10.190.6.190'  # IP Laptop 1 (Webserver)
 SERVER_PORT = 8000
 CACHE_DIR = os.path.join(os.path.dirname(__file__), '..', 'cache')
 LOGS_DIR = os.path.join(os.path.dirname(__file__), '..', 'logs')
