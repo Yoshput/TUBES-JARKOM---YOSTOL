@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tubes Jaringan Komputer - Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .info {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        .info p {
+            margin: 10px 0;
+            color: #333;
+        }
+        .info strong {
+            color: #667eea;
+        }
+        .links {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        a {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        a:hover {
+            background: #764ba2;
+        }
+        .timestamp {
+            color: #999;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tugas Besar Jaringan Komputer</h1>
+        <p class="subtitle">Implementasi HTTP Proxy dengan Python Socket Murni</p>
+        
+        <div class="info">
+            <p><strong>🎯 Komponen Sistem:</strong></p>
+            <p>✓ Web Server (Port 8000 TCP + 9000 UDP)</p>
+            <p>✓ Proxy Server (Port 8080 dengan Caching)</p>
+            <p>✓ Client (TCP & UDP Mode)</p>
+            <p><strong>📊 Fitur:</strong></p>
+            <p>✓ Multithreading</p>
+            <p>✓ HTTP Parsing Manual</p>
+            <p>✓ Cache Mechanism</p>
+            <p>✓ QoS dengan UDP Echo</p>
+        </div>
+
+        <div class="links">
+            <a href="/page.html">Halaman 2</a>
+            <a href="/api/status">API Status</a>
+        </div>
+
+        <p class="timestamp">Generated at: <span id="time"></span></p>
+    </div>
+
+    <script>
+        document.getElementById('time').textContent = new Date().toISOString();
+    </script>
+</body>
+</html>
