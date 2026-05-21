@@ -44,21 +44,28 @@ def log_message(message, level="INFO"):
     
     print(f"{color}[{get_timestamp()}] [{level}]{reset} {message}")
 
-def tcp_mode():
+def tcp_mode(custom_path=None):
     """
     Mode TCP: Send HTTP GET requests through Proxy
+    custom_path: specific path to test (e.g., /index.html), if None test all paths
     """
     log_message("TCP Mode - HTTP Client", "SUCCESS")
     log_message(f"Connecting to Proxy: {PROXY_HOST}:{PROXY_PORT}", "INFO")
     
-    paths = [
-        "/",
-        "/index.html",
-        "/page.html",
-        "/api/status",
-        "/tidak-ada.html",  # Test 404 Not Found
-        "/error"             # Test 404 Not Found
-    ]
+    # Determine paths to test
+    if custom_path:
+        paths = [custom_path]  # Test only custom path
+        log_message(f"Testing single path: {custom_path}", "INFO")
+    else:
+        paths = [
+            "/",
+            "/index.html",
+            "/page.html",
+            "/api/status",
+            "/tidak-ada.html",  # Test 404 Not Found
+            "/error"             # Test 404 Not Found
+        ]
+        log_message(f"Testing all {len(paths)} paths", "INFO")
     
     for path in paths:
         try:
@@ -239,9 +246,15 @@ def show_help():
     print("HTTP CLIENT WITH PROXY & UDP QoS MONITORING".center(70))
     print("=" * 70)
     print("\nUsage:")
-    print("  python client.py --mode tcp     # HTTP GET through Proxy")
-    print("  python client.py --mode udp     # UDP Ping for QoS")
-    print("  python client.py --help         # Show this help")
+    print("  python client.py --mode tcp                 # HTTP GET all paths")
+    print("  python client.py --mode tcp --path /index.html  # Test single path")
+    print("  python client.py --mode udp                 # UDP Ping for QoS")
+    print("  python client.py --help                     # Show this help")
+    print("\nExamples:")
+    print("  python client.py --mode tcp")
+    print("  python client.py --mode tcp --path /page.html")
+    print("  python client.py --mode tcp --path /api/status")
+    print("  python client.py --mode tcp --path /tidak-ada.html  # Test 404")
     print("\nConfiguration:")
     print(f"  Proxy:  {PROXY_HOST}:{PROXY_PORT}")
     print(f"  Server: {SERVER_HOST}:{SERVER_UDP_PORT}")
@@ -254,15 +267,26 @@ def main():
         return
     
     mode = None
-    for arg in sys.argv:
+    custom_path = None
+    
+    # Parse --mode argument
+    for i, arg in enumerate(sys.argv):
         if arg == '--mode' or arg.startswith('--mode='):
             if '=' in arg:
                 mode = arg.split('=')[1].lower()
             else:
-                # Next argument is the mode
-                idx = sys.argv.index(arg)
-                if idx + 1 < len(sys.argv):
-                    mode = sys.argv[idx + 1].lower()
+                if i + 1 < len(sys.argv):
+                    mode = sys.argv[i + 1].lower()
+            break
+    
+    # Parse --path argument (untuk single path testing)
+    for i, arg in enumerate(sys.argv):
+        if arg == '--path' or arg.startswith('--path='):
+            if '=' in arg:
+                custom_path = arg.split('=')[1]
+            else:
+                if i + 1 < len(sys.argv):
+                    custom_path = sys.argv[i + 1]
             break
     
     if not mode:
@@ -270,7 +294,7 @@ def main():
         return
     
     if mode == 'tcp':
-        tcp_mode()
+        tcp_mode(custom_path)
     elif mode == 'udp':
         udp_mode(10)  # Send 10 packets minimum
     else:
