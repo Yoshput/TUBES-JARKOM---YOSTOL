@@ -113,7 +113,7 @@ def write_cache(url, response):
 def parse_http_request(data):
     """
     Parse HTTP request manual
-    Return: (method, path, full_request)
+    Return: (method, path, headers_dict, body)
     """
     try:
         lines = data.split(b'\r\n')
@@ -121,15 +121,33 @@ def parse_http_request(data):
         
         parts = request_line.split()
         if len(parts) < 3:
-            return None, None, data
+            return None, None, {}, b""
         
         method = parts[0]
         path = parts[1]
         
-        return method, path, data
+        # Parse headers
+        headers = {}
+        body_start = 0
+        for i in range(1, len(lines)):
+            if lines[i] == b'':
+                body_start = i + 1
+                break
+            try:
+                header_line = lines[i].decode('utf-8')
+                if ':' in header_line:
+                    key, value = header_line.split(':', 1)
+                    headers[key.strip()] = value.strip()
+            except:
+                pass
+        
+        # Get body
+        body = b'\r\n'.join(lines[body_start:]) if body_start < len(lines) else b""
+        
+        return method, path, headers, body
     except Exception as e:
         log_message(f"Error parsing request: {e}", "ERROR")
-        return None, None, data
+        return None, None, {}, b""
 
 def build_error_response(status_code, message):
     """Build error response"""
@@ -173,13 +191,26 @@ def handle_client(client_socket, client_address):
             return
         
         # Parse request
-        method, path, full_request = parse_http_request(request_data)
+        method, path, headers, body = parse_http_request(request_data)
         
         if not method or not path:
             response = build_error_response(400, "Bad Request")
             client_socket.send(response)
             log_message(f"{client_ip} - Invalid request", "ERROR")
             return
+        
+        # Build forward request dengan Host header yang benar
+        forward_request = f"{method} {path} HTTP/1.1\r\n"
+        forward_request += f"Host: {SERVER_HOST}:{SERVER_PORT}\r\n"
+        forward_request += "Connection: close\r\n"
+        
+        # Add other headers (skip Host yang sudah di-set)
+        for key, value in headers.items():
+            if key.lower() != 'host':
+                forward_request += f"{key}: {value}\r\n"
+        
+        forward_request += "\r\n"
+        forward_request_bytes = forward_request.encode('utf-8') + body
         
         # Only cache GET requests
         cache_status = "N/A"
@@ -223,7 +254,7 @@ def handle_client(client_socket, client_address):
                     return
                 
                 # Forward request
-                server_socket.send(full_request)
+                server_socket.send(forward_request_bytes)
                 
                 # Receive response
                 response = b""
